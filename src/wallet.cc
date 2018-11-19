@@ -160,6 +160,7 @@ bool Wallet::Operation::operator<(const Wallet::Operation &rhs) const {
     return time < rhs.time;
 }
 
+
 const Wallet &Empty() {
     const Wallet &ref = Wallet();
     return ref;
@@ -177,7 +178,7 @@ Wallet& Wallet::operator=(Wallet &&rhs) noexcept {
     return *this;
 }
 
-Wallet& Wallet::operator-=(const Wallet &rhs) {
+Wallet& Wallet::operator-=(Wallet &rhs) {
     this->balance -= rhs.balance;
     rhs.addToBalance(rhs.balance);
     numberOfExistingUnit += rhs.balance;
@@ -185,13 +186,13 @@ Wallet& Wallet::operator-=(const Wallet &rhs) {
     history.push_back(op);
 }
 
-const Wallet Wallet::operator-(const Wallet &other) {
+const Wallet Wallet::operator-(Wallet &other) {
     Wallet result = std::move(*this);
     result -= other;
     return result;
 }
 
-Wallet& Wallet::operator+=(const Wallet &rhs) {
+Wallet& Wallet::operator+=(Wallet &rhs) {
     this->balance += rhs.balance;
     rhs.balance = 0;
     Operation op (0);
@@ -199,7 +200,7 @@ Wallet& Wallet::operator+=(const Wallet &rhs) {
 
 }
 
-const Wallet Wallet::operator+(const Wallet &other) {
+const Wallet Wallet::operator+(Wallet &other) {
     Wallet result = std::move(*this);
     result += other;
     return result;
@@ -228,9 +229,7 @@ bool Wallet::operator==(const Wallet &rhs) {
     return this->getUnits() == rhs.getUnits();
 }
 
-ostream &operator<<(ostream &out, const Wallet::Operation &rhs) {
-    out << "Wallet balance is " + rhs.getUnits() + " B after operation made at day "; // TODO jak skonwertować milisekundy na dzień?
-}
+
 
 
 

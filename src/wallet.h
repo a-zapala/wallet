@@ -6,7 +6,7 @@
 #include <string>
 
 class Wallet {
-private:
+public:
     using Unit = uint64_t;
     using Bajtk = int;
     using Time = std::chrono::system_clock::time_point;
@@ -18,11 +18,17 @@ private:
         Unit getUnits();
         
         bool operator<(const Operation &rhs) const;
+        
+        friend std::ostream &operator<<(std::ostream &out, const Operation &w);
+    
     
     private:
         Unit balanceAfterOperation;
         Time time;
     };
+private:
+    
+    
     
     Unit balance;
     std::vector<Operation> history;
@@ -46,11 +52,15 @@ private:
     static void checkBajtkOverflow(Unit unit);
 
 public:
+    
+    
     Wallet();
     
     Wallet(Bajtk n);
     
     Wallet(std::string str);
+    
+    
     
     static Wallet fromBinary(std::string str);
     
@@ -70,17 +80,17 @@ public:
 
     Wallet& operator=(Wallet &&rhs) noexcept;
 
-    Wallet& operator+=(const Wallet &rhs);
+    Wallet& operator+=(Wallet &rhs);
 
-    const Wallet operator+(const Wallet &other);
+    const Wallet operator+(Wallet &other);
 
     Wallet& operator*=(int n);
 
     const Wallet operator*(int n);
 
-    Wallet& operator-=(const Wallet &rhs);
+    Wallet& operator-=(Wallet &rhs);
 
-    const Wallet operator-(const Wallet &other);
+    const Wallet operator-(Wallet &other);
 
     bool operator<(const Wallet &rhs);
 
