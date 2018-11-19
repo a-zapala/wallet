@@ -56,7 +56,7 @@ public:
     
     Wallet(const Wallet &other) = delete;
     
-    Wallet(Wallet &&other);
+    Wallet(Wallet &&other) noexcept;
     
     Wallet(Wallet &&w1, Wallet &&w2);
     
@@ -67,6 +67,24 @@ public:
     friend std::ostream &operator<<(std::ostream &out, const Wallet &w);
     
     const Operation &operator[](size_t idx);
+
+    Wallet& operator=(Wallet &&rhs) noexcept;
+
+    Wallet& operator+=(const Wallet &rhs);
+
+    const Wallet operator+(const Wallet &other);
+
+    Wallet& operator*=(int n);
+
+    const Wallet operator*(int n);
+
+    Wallet& operator-=(const Wallet &rhs);
+
+    const Wallet operator-(const Wallet &other);
+
+    bool operator<(const Wallet &rhs);
+
+    bool operator==(const Wallet &rhs);
 };
 
 const Wallet &Empty();

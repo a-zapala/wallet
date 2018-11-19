@@ -60,7 +60,7 @@ Wallet Wallet::fromBinary(std::string str) {
     return Wallet(convertToBajtk(str));
 }
 
-Wallet::Wallet(Wallet &&other) : balance(other.balance), history(move(other.history)) {
+Wallet::Wallet(Wallet &&other) noexcept : balance(other.balance), history(move(other.history)) {
     other.balance = 0;
 }
 
@@ -164,3 +164,75 @@ const Wallet &Empty() {
     const Wallet &ref = Wallet();
     return ref;
 }
+
+Wallet& Wallet::operator=(Wallet &&rhs) noexcept {
+    if (this == &rhs) {
+        return *this;
+    }
+    else {
+        *this = Wallet(std::move(rhs));
+        Operation op(balance);
+        history.push_back(op);
+    }
+    return *this;
+}
+
+Wallet& Wallet::operator-=(const Wallet &rhs) {
+    this->balance -= rhs.balance;
+    rhs.addToBalance(rhs.balance);
+    numberOfExistingUnit += rhs.balance;
+    Operation op(this->balance);
+    history.push_back(op);
+}
+
+const Wallet Wallet::operator-(const Wallet &other) {
+    Wallet result = std::move(*this);
+    result -= other;
+    return result;
+}
+
+Wallet& Wallet::operator+=(const Wallet &rhs) {
+    this->balance += rhs.balance;
+    rhs.balance = 0;
+    Operation op (0);
+    rhs.history.push_back(op);
+
+}
+
+const Wallet Wallet::operator+(const Wallet &other) {
+    Wallet result = std::move(*this);
+    result += other;
+    return result;
+}
+
+Wallet& Wallet::operator*=(int n) {
+    Unit balance = this->getUnits();
+    Unit newCoins = balance * (n - 1);
+    this->addToBalance(newCoins);
+    numberOfExistingUnit += newCoins;
+    // Sprawdzenie, czy nie przekraczamy limitu monet.
+    return *this;
+}
+
+const Wallet Wallet::operator*(int n) {
+    Wallet result = std::move(*this);
+    result *= n;
+    return result;
+}
+
+bool Wallet::operator<(const Wallet &rhs) {
+    return this->getUnits() < rhs.getUnits();
+}
+
+bool Wallet::operator==(const Wallet &rhs) {
+    return this->getUnits() == rhs.getUnits();
+}
+
+ostream &operator<<(ostream &out, const Wallet::Operation &rhs) {
+    out << "Wallet balance is " + rhs.getUnits() + " B after operation made at day "; // TODO jak skonwertować milisekundy na dzień?
+}
+
+
+
+
+
