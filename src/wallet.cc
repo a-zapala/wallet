@@ -160,9 +160,12 @@ bool Wallet::Operation::operator<(const Wallet::Operation &rhs) const {
     return time < rhs.time;
 }
 
+std::ostream &operator<<(std::ostream &out, const Wallet::Operation &w) {
+    return out;
+}
 
 const Wallet &Empty() {
-    const Wallet &ref = Wallet();
+    const static Wallet ref = Wallet();
     return ref;
 }
 
@@ -170,11 +173,11 @@ Wallet& Wallet::operator=(Wallet &&rhs) noexcept {
     if (this == &rhs) {
         return *this;
     }
-    else {
-        *this = Wallet(std::move(rhs));
-        Operation op(balance);
-        history.push_back(op);
-    }
+    
+    *this = Wallet(std::move(rhs));
+    Operation op(balance);
+    history.push_back(op);
+    
     return *this;
 }
 
