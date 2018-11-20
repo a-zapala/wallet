@@ -18,6 +18,7 @@ public:
         Unit getUnits();
         
         bool operator<(const Operation &rhs) const;
+        bool operator==(const Operation &rhs) const;
         
         friend std::ostream &operator<<(std::ostream &out, const Operation &w);
     
@@ -110,6 +111,16 @@ public:
     bool operator<(const Wallet &rhs);
 
     bool operator==(const Wallet &rhs) const; // TODO dodane const
+
+    friend bool operator==(const Wallet &lhs, const Wallet &rhs);
+    friend bool operator==(const Wallet &lhs, const Wallet &&rhs);
+    friend bool operator==(const Wallet &&lhs, const Wallet &rhs);
+    friend bool operator==(const Wallet &&lhs, const Wallet &&rhs);
+    friend bool operator==(const Wallet &lhs, unsigned int balance);
+    friend bool operator==(const Wallet &&lhs, unsigned int balance);
+    friend bool operator==(const Wallet &lhs, unsigned int balance);
+    friend bool operator==(unsigned int balance, const Wallet &rhs);
+    friend bool operator==(unsigned int balance, const Wallet &&rhs);
 };
 
 const Wallet &Empty();

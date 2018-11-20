@@ -161,6 +161,10 @@ bool Wallet::Operation::operator<(const Wallet::Operation &rhs) const {
     return time < rhs.time;
 }
 
+bool Wallet::Operation::operator==(const Wallet::Operation &rhs) const {
+    return time == rhs.time;
+}
+
 std::ostream &operator<<(std::ostream &out, const Wallet::Operation &w) {
     return out;
 }
@@ -272,9 +276,38 @@ bool operator<(const Wallet &&lhs, Wallet &rhs) {
     return lhs.balance < rhs.balance;
 }
 
-
-bool Wallet::operator==(const Wallet &rhs) const {
-    return this->getUnits() == rhs.getUnits();
+bool operator==(const Wallet &&lhs, const Wallet &rhs) {
+    return lhs.getUnits() == rhs.getUnits();
 }
+
+bool operator==(const Wallet &&lhs, const Wallet &&rhs) {
+    return lhs.getUnits() == rhs.getUnits();
+}
+
+bool operator==(const Wallet &lhs, const Wallet &rhs) {
+    return lhs.getUnits() == rhs.getUnits();
+}
+
+bool operator==(const Wallet &lhs, const Wallet &&rhs) {
+    return lhs.getUnits() == rhs.getUnits();
+}
+
+bool operator==(unsigned int balance, const Wallet &rhs) {
+    return balance == rhs.getUnits() * Wallet::unitInBajtk;
+}
+
+bool operator==(unsigned int balance, const Wallet &&rhs) {
+    return balance == rhs.getUnits() * Wallet::unitInBajtk;
+}
+
+bool operator==(const Wallet &lhs, unsigned int balance) {
+    return balance == lhs.getUnits() * Wallet::unitInBajtk;
+}
+
+bool operator==(const Wallet &&lhs, unsigned int balance) {
+    return balance == lhs.getUnits() * Wallet::unitInBajtk;
+}
+
+
 
 //bool Operation::operator<(const Operation op)
