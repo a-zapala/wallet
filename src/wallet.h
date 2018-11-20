@@ -8,7 +8,7 @@
 class Wallet {
 public:
     using Unit = uint64_t;
-    using Bajtk = int;
+    using Bajtk = unsigned int;
     using Time = std::chrono::system_clock::time_point;
     
     class Operation {
@@ -78,19 +78,34 @@ public:
     
     const Operation &operator[](size_t idx);
 
+    friend bool operator<(const Wallet &lhs, Wallet &&rhs);
+    friend bool operator<(const Wallet &lhs, Wallet &rhs);
+    friend bool operator<(const Wallet &&lhs, Wallet &&rhs);
+    friend bool operator<(const Wallet &&lhs, Wallet &rhs);
+
+
     Wallet& operator=(Wallet &&rhs) noexcept;
 
     Wallet& operator+=(Wallet &rhs);
+    Wallet& operator+=(Wallet &&rhs);
 
-    const Wallet operator+(Wallet &other);
+    friend Wallet&& operator+(Wallet &&lhs, Wallet&rhs);
+    friend Wallet&& operator+(Wallet &&lhs, Wallet&&rhs);
+
 
     Wallet& operator*=(int n);
+    friend Wallet&& operator*(Wallet &lhs, int n);
+    friend Wallet&& operator*(Wallet &&lhs, int n);
+    friend Wallet&& operator*(int n, Wallet &lhs);
+    friend Wallet&& operator*(int n, Wallet &&lhs);
 
-    Wallet operator*(int n) const; // TODO dodane const
+    //Wallet operator*(int n) const; // TODO dodane const
 
     Wallet& operator-=(Wallet &rhs);
+    Wallet& operator-=(Wallet &&rhs);
 
-    const Wallet operator-(Wallet &other);
+    friend Wallet&& operator-(Wallet &&lhs, Wallet&rhs);
+    friend Wallet&& operator-(Wallet &&lhs, Wallet&&rhs);
 
     bool operator<(const Wallet &rhs);
 

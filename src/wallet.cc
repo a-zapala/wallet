@@ -4,6 +4,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace std::rel_ops;
 
 constexpr int MAX_STRING_LENGTH_OF_B = 8;
 constexpr int MAX_STRING_FRACTIONAL_LENGTH_OF_B = 8;
@@ -186,6 +187,12 @@ Wallet& Wallet::operator-=(Wallet &rhs) {
     rhs.addToBalance(rhs.balance);
     numberOfExistingUnit += rhs.balance;
     addToBalance(0);
+    return *this;
+}
+
+Wallet& Wallet::operator-=(Wallet &&rhs) {
+    *this -= rhs;
+    return *this;
 }
 
 Wallet&& operator-(Wallet &&lhs, Wallet &rhs) {
@@ -193,14 +200,29 @@ Wallet&& operator-(Wallet &&lhs, Wallet &rhs) {
     return std::move(rhs);
 }
 
+Wallet&& operator-(Wallet &&lhs, Wallet &&rhs) {
+    lhs -= rhs;
+    return std::move(rhs);
+}
+
 Wallet& Wallet::operator+=(Wallet &rhs) {
     balance += rhs.balance;
-    rhs.balance = 0;
     addToBalance(0);
+    rhs.balance = 0;
+    rhs.addToBalance(0);
+}
 
+Wallet& Wallet::operator+=(Wallet &&rhs) {
+    *this += rhs;
+    return *this;
 }
 
 Wallet&& operator+(Wallet &&lhs, Wallet &rhs) {
+    lhs += rhs;
+    return(std::move(lhs));
+}
+
+Wallet&& operator+(Wallet &&lhs, Wallet &&rhs) {
     lhs += rhs;
     return(std::move(lhs));
 }
@@ -214,15 +236,45 @@ Wallet& Wallet::operator*=(int n) {
     return *this;
 }
 
-Wallet&& operator*(Wallet &&lhs, Wallet &rhs) {
-    lhs *= rhs;
+Wallet&& operator*(Wallet &lhs, int n) {
+    lhs *= n;
     return(std::move(lhs));
 }
 
-bool Wallet::operator<(const Wallet &rhs) {
-    return this->getUnits() < rhs.getUnits();
+Wallet&& operator*(Wallet &&lhs, int n) {
+    lhs *= n;
+    return(std::move(lhs));
 }
 
-bool Wallet::operator==(const Wallet &rhs) {
+Wallet&& operator*(int n, Wallet &rhs) {
+    rhs *= n;
+    return(std::move(rhs));
+}
+
+Wallet&& operator*(int n, Wallet &&rhs) {
+    rhs *= n;
+    return(std::move(rhs));
+}
+
+bool operator<(const Wallet &lhs, Wallet &&rhs) {
+    return lhs.balance < rhs.balance;
+}
+
+bool operator<(const Wallet &&lhs, Wallet &&rhs) {
+    return lhs.balance < rhs.balance;
+}
+
+bool operator<(const Wallet &lhs, Wallet &rhs) {
+    return lhs.balance < rhs.balance;
+}
+
+bool operator<(const Wallet &&lhs, Wallet &rhs) {
+    return lhs.balance < rhs.balance;
+}
+
+
+bool Wallet::operator==(const Wallet &rhs) const {
     return this->getUnits() == rhs.getUnits();
 }
+
+//bool Operation::operator<(const Operation op)
