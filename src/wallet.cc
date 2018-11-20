@@ -222,7 +222,7 @@ Wallet& Wallet::operator=(Wallet &&rhs) noexcept {
     balance = rhs.balance;
     rhs.balance = 0;
     history = std::move(rhs.history);
-    addToBalance(0);
+    addToBalance(rhs.balance);
     
     return *this;
 }
@@ -231,7 +231,7 @@ Wallet& Wallet::operator-=(Wallet &rhs) {
     balance -= rhs.balance;
     rhs.addToBalance(rhs.balance);
     numberOfExistingUnit += rhs.balance;
-    addToBalance(0);
+    addToBalance(rhs.balance);
     return *this;
 }
 
@@ -252,9 +252,9 @@ Wallet&& operator-(Wallet &&lhs, Wallet &&rhs) {
 
 Wallet& Wallet::operator+=(Wallet &rhs) {
     balance += rhs.balance;
-    addToBalance(0);
+    addToBalance(balance);
     rhs.balance = 0;
-    rhs.addToBalance(0);
+    rhs.addToBalance(rhs.balance);
     return *this;
 }
 
@@ -334,19 +334,19 @@ bool operator==(const Wallet &lhs, const Wallet &&rhs) {
     return lhs.getUnits() == rhs.getUnits();
 }
 
-bool operator==(Wallet::Unit balance, const Wallet &rhs) {
+bool operator==(long long balance, const Wallet &rhs) {
     return balance == rhs.getUnits() * Wallet::unitInBajtk;
 }
 
-bool operator==(Wallet::Unit balance, const Wallet &&rhs) {
+bool operator==(long long balance, const Wallet &&rhs) {
     return balance == rhs.getUnits() * Wallet::unitInBajtk;
 }
 
-bool operator==(const Wallet &lhs, Wallet::Unit balance) {
+bool operator==(const Wallet &lhs, long long balance) {
     return balance == lhs.getUnits() * Wallet::unitInBajtk;
 }
 
-bool operator==(const Wallet &&lhs, Wallet::Unit balance) {
+bool operator==(const Wallet &&lhs, long long balance) {
     return balance == lhs.getUnits() * Wallet::unitInBajtk;
 }
 

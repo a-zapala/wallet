@@ -128,11 +128,11 @@ public:
     friend bool operator==(const Wallet &lhs, const Wallet &&rhs);
     friend bool operator==(const Wallet &&lhs, const Wallet &rhs);
     friend bool operator==(const Wallet &&lhs, const Wallet &&rhs);
-    friend bool operator==(const Wallet &lhs, Wallet::Unit balance);
-    friend bool operator==(const Wallet &&lhs, Wallet::Unit balance);
-    friend bool operator==(const Wallet &lhs, Wallet::Unit balance);
-    friend bool operator==(Wallet::Unit balance, const Wallet &rhs);
-    friend bool operator==(Wallet::Unit balance, const Wallet &&rhs);
+    friend bool operator==(const Wallet &lhs, long long balancee);
+    friend bool operator==(const Wallet &&lhs, long long balance);
+    friend bool operator==(const Wallet &lhs, long long balance);
+    friend bool operator==(long long balance, const Wallet &rhs);
+    friend bool operator==(long long balance, const Wallet &&rhs);
 };
 
 const Wallet &Empty();
