@@ -314,7 +314,7 @@ bool operator<(const Wallet &lhs, Wallet &rhs) {
     return lhs.balance < rhs.balance;
 }
 
-bool operator<(const Wallet &&lhs, Wallet &rhs) {
+bool operator<(const Wallet &lhs, const Wallet &rhs) {
     return lhs.balance < rhs.balance;
 }
 
