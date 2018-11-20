@@ -70,7 +70,7 @@ Wallet Wallet::fromBinary(std::string str) {
     return Wallet(convertToBajtk(str));
 }
 
-Wallet::Wallet(Wallet &&other) noexcept : balance(), history(move(other.history)) {
+Wallet::Wallet(Wallet &&other) noexcept : balance(0), history(move(other.history)) {
     addToBalance(other.balance);
     other.balance = 0;
 }
@@ -103,8 +103,7 @@ const Wallet::Operation &Wallet::operator[](size_t k) const {
 
 void Wallet::addToBalance(Wallet::Unit unit) {
     balance += unit;
-    Operation op(balance);
-    history.push_back(op);
+    saveState();
 }
 
 void Wallet::createAndAddToBalance(Wallet::Unit unit) {
@@ -194,9 +193,7 @@ bool Wallet::Operation::operator!=(const Wallet::Operation &rhs) const {
 std::ostream &operator<<(std::ostream &out, const Wallet::Operation &w) {
     string balanceString = Wallet::toString(w.balanceAfterOperation);
     string dateString = w.timeToDate();
-    
     out << "Wallet balance is " + balanceString + " B after operation made at day " + dateString << endl;
-    
     return out;
 }
 
@@ -220,8 +217,7 @@ Wallet &Wallet::operator=(Wallet &&rhs) noexcept {
     balance = rhs.balance;
     rhs.balance = 0;
     history = std::move(rhs.history);
-    addToBalance(0);
-    
+    saveState();
     return *this;
 }
 
@@ -231,7 +227,7 @@ Wallet &Wallet::operator-=(Wallet &rhs) {
     }
     balance -= rhs.balance;
     rhs.addToBalance(rhs.balance);
-    addToBalance(0);
+    saveState();
     return *this;
 }
 
@@ -252,9 +248,9 @@ Wallet &&operator-(Wallet &&lhs, Wallet &&rhs) {
 
 Wallet &Wallet::operator+=(Wallet &rhs) {
     balance += rhs.balance;
-    addToBalance(0);
+    saveState();
     rhs.balance = 0;
-    rhs.addToBalance(0);
+    rhs.saveState();
     return *this;
 }
 
@@ -274,7 +270,6 @@ Wallet &&operator+(Wallet &&lhs, Wallet &&rhs) {
 }
 
 Wallet &Wallet::operator*=(int n) {
-    Unit balance = getUnits();
     if (n == 0) {
         balance = 0;
         addToBalance(0);
@@ -335,6 +330,11 @@ bool operator>=(const Wallet &lhs, const Wallet &rhs) {
 
 Wallet::~Wallet() {
     numberOfExistingUnit -= balance;
+}
+
+void Wallet::saveState() {
+    Operation op(balance);
+    history.push_back(op);
 }
 
 

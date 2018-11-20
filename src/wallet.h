@@ -49,6 +49,8 @@ private:
     
     void createAndAddToBalance(Unit unit);
     
+    void saveState();
+    
     static Unit convertToUnit(Bajtk b);
     
     static Bajtk convertToBajtk(const std::string &str);
