@@ -86,7 +86,7 @@ public:
 
     Wallet& operator*=(int n);
 
-    Wallet operator*(int n); //TODO
+    Wallet operator*(int n) const; // TODO dodane const
 
     Wallet& operator-=(Wallet &rhs);
 
@@ -94,7 +94,7 @@ public:
 
     bool operator<(const Wallet &rhs);
 
-    bool operator==(const Wallet &rhs);//TODO;
+    bool operator==(const Wallet &rhs) const; // TODO dodane const
 };
 
 const Wallet &Empty();

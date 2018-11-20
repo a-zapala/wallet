@@ -173,55 +173,50 @@ Wallet& Wallet::operator=(Wallet &&rhs) noexcept {
     if (this == &rhs) {
         return *this;
     }
-    
-    *this = Wallet(std::move(rhs));
-    Operation op(balance);
-    history.push_back(op);
+    balance = rhs.balance;
+    rhs.balance = 0;
+    history = std::move(rhs.history);
+    addToBalance(0);
     
     return *this;
 }
 
 Wallet& Wallet::operator-=(Wallet &rhs) {
-    this->balance -= rhs.balance;
+    balance -= rhs.balance;
     rhs.addToBalance(rhs.balance);
     numberOfExistingUnit += rhs.balance;
-    Operation op(this->balance);
-    history.push_back(op);
+    addToBalance(0);
 }
 
-const Wallet Wallet::operator-(Wallet &other) {
-    Wallet result = std::move(*this);
-    result -= other;
-    return result;
+Wallet&& operator-(Wallet &&lhs, Wallet &rhs) {
+    lhs -= rhs;
+    return std::move(rhs);
 }
 
 Wallet& Wallet::operator+=(Wallet &rhs) {
-    this->balance += rhs.balance;
+    balance += rhs.balance;
     rhs.balance = 0;
-    Operation op (0);
-    rhs.history.push_back(op);
+    addToBalance(0);
 
 }
 
-const Wallet Wallet::operator+(Wallet &other) {
-    Wallet result = std::move(*this);
-    result += other;
-    return result;
+Wallet&& operator+(Wallet &&lhs, Wallet &rhs) {
+    lhs += rhs;
+    return(std::move(lhs));
 }
 
 Wallet& Wallet::operator*=(int n) {
-    Unit balance = this->getUnits();
+    Unit balance = getUnits();
     Unit newCoins = balance * (n - 1);
-    this->addToBalance(newCoins);
+    addToBalance(newCoins);
     numberOfExistingUnit += newCoins;
     // Sprawdzenie, czy nie przekraczamy limitu monet.
     return *this;
 }
 
-const Wallet Wallet::operator*(int n) {
-    Wallet result = std::move(*this);
-    result *= n;
-    return result;
+Wallet&& operator*(Wallet &&lhs, Wallet &rhs) {
+    lhs *= rhs;
+    return(std::move(lhs));
 }
 
 bool Wallet::operator<(const Wallet &rhs) {
@@ -231,10 +226,3 @@ bool Wallet::operator<(const Wallet &rhs) {
 bool Wallet::operator==(const Wallet &rhs) {
     return this->getUnits() == rhs.getUnits();
 }
-
-
-
-
-
-
-
