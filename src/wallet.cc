@@ -226,9 +226,11 @@ Wallet &Wallet::operator=(Wallet &&rhs) noexcept {
 }
 
 Wallet &Wallet::operator-=(Wallet &rhs) {
+    if (rhs.balance > balance) {
+        throw std::invalid_argument("Negative wallet balance");
+    }
     balance -= rhs.balance;
     rhs.addToBalance(rhs.balance);
-    numberOfExistingUnit += rhs.balance;
     addToBalance(0);
     return *this;
 }
@@ -273,10 +275,17 @@ Wallet &&operator+(Wallet &&lhs, Wallet &&rhs) {
 
 Wallet &Wallet::operator*=(int n) {
     Unit balance = getUnits();
-    Unit newCoins = balance * (n - 1);
-    addToBalance(newCoins);
-    numberOfExistingUnit += newCoins;
-    // Sprawdzenie, czy nie przekraczamy limitu monet.
+    if (n == 0) {
+        balance = 0;
+        addToBalance(0);
+    }
+    else {
+        if (n - 1 > maxNumberOfUnit / balance) {
+            throw overflow_error("Passed B exceed maximum number of B");
+        }
+        Unit newCoins = balance * (n - 1);
+        createAndAddToBalance(newCoins);
+    }
     return *this;
 }
 
