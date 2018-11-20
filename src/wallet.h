@@ -19,7 +19,13 @@ public:
         
         bool operator<(const Operation &rhs) const;
         bool operator==(const Operation &rhs) const;
-        
+        bool operator<=(const Operation &rhs) const;
+        bool operator>(const Operation &rhs) const;
+        bool operator>=(const Operation &rhs) const;
+        bool operator!=(const Operation &rhs) const;
+
+
+
         friend std::ostream &operator<<(std::ostream &out, const Operation &w);
     
     

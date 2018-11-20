@@ -4,7 +4,6 @@
 #include <iostream>
 
 using namespace std;
-using namespace std::rel_ops;
 
 constexpr int MAX_STRING_LENGTH_OF_B = 8;
 constexpr int MAX_STRING_FRACTIONAL_LENGTH_OF_B = 8;
@@ -163,6 +162,22 @@ bool Wallet::Operation::operator<(const Wallet::Operation &rhs) const {
 
 bool Wallet::Operation::operator==(const Wallet::Operation &rhs) const {
     return time == rhs.time;
+}
+
+bool Wallet::Operation::operator<=(const Wallet::Operation &rhs) const {
+    return time == rhs.time && time < rhs.time;
+}
+
+bool Wallet::Operation::operator>(const Wallet::Operation &rhs) const {
+    return time > rhs.time;
+}
+
+bool Wallet::Operation::operator>=(const Wallet::Operation &rhs) const {
+    return time >= rhs.time;
+}
+
+bool Wallet::Operation::operator!=(const Wallet::Operation &rhs) const {
+    return time != rhs.time;
 }
 
 std::ostream &operator<<(std::ostream &out, const Wallet::Operation &w) {
