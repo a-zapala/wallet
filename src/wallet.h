@@ -120,11 +120,9 @@ public:
     friend Wallet&& operator-(Wallet &&lhs, Wallet&rhs);
     friend Wallet&& operator-(Wallet &&lhs, Wallet&&rhs);
 
-    bool operator<(const Wallet &rhs);
-
-    //bool operator==(const Wallet &rhs) const; // TODO dodane const
-
+    friend bool operator<(const Wallet &lhs, const Wallet &rhs);
     friend bool operator==(const Wallet &lhs, const Wallet &rhs);
+<<<<<<< HEAD
     friend bool operator==(const Wallet &lhs, const Wallet &&rhs);
     friend bool operator==(const Wallet &&lhs, const Wallet &rhs);
     friend bool operator==(const Wallet &&lhs, const Wallet &&rhs);
@@ -133,6 +131,9 @@ public:
     friend bool operator==(const Wallet &lhs, long long balance);
     friend bool operator==(long long balance, const Wallet &rhs);
     friend bool operator==(long long balance, const Wallet &&rhs);
+=======
+
+>>>>>>> d0b69a10f9b7745fb55af1f777a23471d38e2968
 };
 
 const Wallet &Empty();

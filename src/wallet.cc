@@ -252,9 +252,9 @@ Wallet&& operator-(Wallet &&lhs, Wallet &&rhs) {
 
 Wallet& Wallet::operator+=(Wallet &rhs) {
     balance += rhs.balance;
-    addToBalance(balance);
+    addToBalance(0);
     rhs.balance = 0;
-    rhs.addToBalance(rhs.balance);
+    rhs.addToBalance(0);
     return *this;
 }
 
@@ -318,18 +318,11 @@ bool operator<(const Wallet &&lhs, Wallet &rhs) {
     return lhs.balance < rhs.balance;
 }
 
-bool operator==(const Wallet &&lhs, const Wallet &rhs) {
-    return lhs.getUnits() == rhs.getUnits();
-}
-
-bool operator==(const Wallet &&lhs, const Wallet &&rhs) {
-    return lhs.getUnits() == rhs.getUnits();
-}
-
 bool operator==(const Wallet &lhs, const Wallet &rhs) {
     return lhs.getUnits() == rhs.getUnits();
 }
 
+<<<<<<< HEAD
 bool operator==(const Wallet &lhs, const Wallet &&rhs) {
     return lhs.getUnits() == rhs.getUnits();
 }
@@ -350,6 +343,8 @@ bool operator==(const Wallet &&lhs, long long balance) {
     return balance == lhs.getUnits() * Wallet::unitInBajtk;
 }
 
+=======
+>>>>>>> d0b69a10f9b7745fb55af1f777a23471d38e2968
 
 
 Wallet::~Wallet() {
