@@ -15,7 +15,7 @@ public:
     public:
         explicit Operation(Unit currentBalance);
         
-        Unit getUnits();
+        Unit getUnits() const;
         
         bool operator<(const Operation &rhs) const;
         bool operator==(const Operation &rhs) const;
@@ -77,7 +77,7 @@ public:
     
     friend std::ostream &operator<<(std::ostream &out, const Wallet &w);
     
-    const Operation &operator[](size_t idx);
+    const Operation operator[](size_t idx) const;
 
     friend bool operator<(const Wallet &lhs, Wallet &&rhs);
     friend bool operator<(const Wallet &lhs, Wallet &rhs);
@@ -110,7 +110,7 @@ public:
 
     bool operator<(const Wallet &rhs);
 
-    bool operator==(const Wallet &rhs) const; // TODO dodane const
+    //bool operator==(const Wallet &rhs) const; // TODO dodane const
 
     friend bool operator==(const Wallet &lhs, const Wallet &rhs);
     friend bool operator==(const Wallet &lhs, const Wallet &&rhs);

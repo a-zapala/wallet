@@ -87,7 +87,7 @@ ostream &operator<<(ostream &out, const Wallet &w) {
     return out;
 }
 
-const Wallet::Operation &Wallet::operator[](size_t k) {
+const Wallet::Operation Wallet::operator[](size_t k) const {
     return history[k];
 }
 
@@ -153,7 +153,7 @@ Wallet::Operation::Operation(Unit currentBalance) : balanceAfterOperation(curren
     time = chrono::time_point_cast<chrono::milliseconds>(now); //cat precision to milliseconds
 }
 
-Wallet::Unit Wallet::Operation::getUnits() {
+Wallet::Unit Wallet::Operation::getUnits() const {
     return balanceAfterOperation;
 }
 
