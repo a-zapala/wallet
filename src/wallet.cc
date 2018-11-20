@@ -178,7 +178,7 @@ bool Wallet::Operation::operator==(const Wallet::Operation &rhs) const {
 }
 
 bool Wallet::Operation::operator<=(const Wallet::Operation &rhs) const {
-    return time == rhs.time && time < rhs.time;
+    return time <= rhs.time;
 }
 
 bool Wallet::Operation::operator>(const Wallet::Operation &rhs) const {
@@ -242,12 +242,12 @@ Wallet& Wallet::operator-=(Wallet &&rhs) {
 
 Wallet&& operator-(Wallet &&lhs, Wallet &rhs) {
     lhs -= rhs;
-    return std::move(rhs);
+    return std::move(lhs);
 }
 
 Wallet&& operator-(Wallet &&lhs, Wallet &&rhs) {
     lhs -= rhs;
-    return std::move(rhs);
+    return std::move(lhs);
 }
 
 Wallet& Wallet::operator+=(Wallet &rhs) {
