@@ -120,9 +120,8 @@ public:
     friend Wallet&& operator-(Wallet &&lhs, Wallet&rhs);
     friend Wallet&& operator-(Wallet &&lhs, Wallet&&rhs);
 
-    bool operator<(const Wallet &rhs);
-    
-    friend bool operator==(const Wallet &a, const Wallet &b);
+    friend bool operator<(const Wallet &lhs, const Wallet &rhs);
+    friend bool operator==(const Wallet &lhs, const Wallet &rhs);
 
 };
 
