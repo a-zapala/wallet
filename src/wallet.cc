@@ -2,13 +2,17 @@
 #include <stdexcept>
 #include <regex>
 #include <iostream>
+#include "wallet.h"
+
 
 using namespace std;
 using namespace std::rel_ops;
 
-constexpr int MAX_STRING_LENGTH_OF_B = 8;
-constexpr int MAX_STRING_FRACTIONAL_LENGTH_OF_B = 8;
-constexpr int MAX_BINARY_STRING_LENGTH_OF_B = 24;
+namespace {
+    constexpr int MAX_STRING_LENGTH_OF_B = 8;
+    constexpr int MAX_STRING_FRACTIONAL_LENGTH_OF_B = 8;
+    constexpr int MAX_BINARY_STRING_LENGTH_OF_B = 24;
+}
 
 Wallet::Unit Wallet::numberOfExistingUnit = 0;
 
@@ -21,7 +25,15 @@ Wallet::Wallet(Wallet::Bajtk b) : balance(0), history() {
     createAndAddToBalance(units);
 }
 
-Wallet::Wallet(std::string str) : balance(), history() {
+Wallet::Wallet(const std::string &str) : balance(), history() {
+    initFromString(str);
+}
+
+Wallet::Wallet(const char *str) : balance(), history()  {
+    initFromString(str);
+}
+
+void Wallet::initFromString(const std::string &str) {
     smatch matchResult;
     regex expr("^\\s*"
                "(0|[1-9]\\d*)"
@@ -61,7 +73,8 @@ Wallet Wallet::fromBinary(std::string str) {
     return Wallet(convertToBajtk(str));
 }
 
-Wallet::Wallet(Wallet &&other) noexcept : balance(other.balance), history(move(other.history)) {
+Wallet::Wallet(Wallet &&other) noexcept : balance(), history(move(other.history)) {
+    addToBalance(other.balance);
     other.balance = 0;
 }
 
@@ -83,11 +96,11 @@ size_t Wallet::opSize() const {
 }
 
 ostream &operator<<(ostream &out, const Wallet &w) {
-    out << "Wallet[" << w.balanceToBString() << " B]" << endl;
+    out << "Wallet[" << Wallet::toString(w.balance) << " B]";
     return out;
 }
 
-const Wallet::Operation Wallet::operator[](size_t k) const {
+const Wallet::Operation &Wallet::operator[](size_t k) const {
     return history[k];
 }
 
@@ -103,8 +116,8 @@ void Wallet::createAndAddToBalance(Wallet::Unit unit) {
     numberOfExistingUnit += unit;
 }
 
-std::string Wallet::balanceToBString() const {
-    auto b = Bajtk(balance / Wallet::unitInBajtk);
+std::string Wallet::toString(Wallet::Unit balance) {
+    auto b = Wallet::Bajtk(balance / Wallet::unitInBajtk);
     auto fractionalPart = balance % Wallet::unitInBajtk;
     string ret = to_string(b);
     if (fractionalPart != 0) {
@@ -153,7 +166,7 @@ Wallet::Operation::Operation(Unit currentBalance) : balanceAfterOperation(curren
     time = chrono::time_point_cast<chrono::milliseconds>(now); //cat precision to milliseconds
 }
 
-Wallet::Unit Wallet::Operation::getUnits() const {
+Wallet::Unit Wallet::Operation::getUnits() const{
     return balanceAfterOperation;
 }
 
@@ -166,12 +179,25 @@ bool Wallet::Operation::operator==(const Wallet::Operation &rhs) const {
 }
 
 std::ostream &operator<<(std::ostream &out, const Wallet::Operation &w) {
+    string balanceString = Wallet::toString(w.balanceAfterOperation);
+    string dateString = w.timeToDate();
+    
+    out << "Wallet balance is " + balanceString+ " B after operation made at day " + dateString << endl;
+    
     return out;
 }
 
+std::string Wallet::Operation::timeToDate() const {
+    time_t t = chrono::system_clock::to_time_t(time);
+    auto timeStructure = *localtime(&t);
+    return to_string(timeStructure.tm_year + 1900) + "-"
+    + to_string(timeStructure.tm_mon + 1) + "-"
+    + to_string(timeStructure.tm_mday);
+}
+
 const Wallet &Empty() {
-    const static Wallet ref = Wallet();
-    return ref;
+    const static Wallet empty = Wallet();
+    return empty;
 }
 
 Wallet& Wallet::operator=(Wallet &&rhs) noexcept {
@@ -309,5 +335,9 @@ bool operator==(const Wallet &&lhs, unsigned int balance) {
 }
 
 
+
+Wallet::~Wallet() {
+    numberOfExistingUnit-=balance;
+}
 
 //bool Operation::operator<(const Operation op)

@@ -8,7 +8,7 @@
 class Wallet {
 public:
     using Unit = uint64_t;
-    using Bajtk = unsigned int;
+    using Bajtk = int;
     using Time = std::chrono::system_clock::time_point;
     
     class Operation {
@@ -26,11 +26,10 @@ public:
     private:
         Unit balanceAfterOperation;
         Time time;
+        
+        std::string timeToDate() const;
     };
 private:
-    
-    
-    
     Unit balance;
     std::vector<Operation> history;
     
@@ -44,13 +43,13 @@ private:
     
     void createAndAddToBalance(Unit unit);
     
-    std::string balanceToBString() const;
-    
     static Unit convertToUnit(Bajtk b);
     
     static Bajtk convertToBajtk(const std::string &str);
     
     static void checkBajtkOverflow(Unit unit);
+    
+    void initFromString(const std::string &str);
 
 public:
     
@@ -59,11 +58,18 @@ public:
     
     Wallet(Bajtk n);
     
-    Wallet(std::string str);
+    Wallet(const std::string &str);
     
+    Wallet(const char *str);
     
+    template <typename T>
+    Wallet(T t) = delete;
+    
+    virtual ~Wallet();
     
     static Wallet fromBinary(std::string str);
+    
+    static std::string toString(Unit balance);
     
     Wallet(const Wallet &other) = delete;
     
@@ -77,7 +83,7 @@ public:
     
     friend std::ostream &operator<<(std::ostream &out, const Wallet &w);
     
-    const Operation operator[](size_t idx) const;
+    const Operation &operator[](size_t idx) const;
 
     friend bool operator<(const Wallet &lhs, Wallet &&rhs);
     friend bool operator<(const Wallet &lhs, Wallet &rhs);
