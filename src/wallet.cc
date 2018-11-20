@@ -255,6 +255,7 @@ Wallet& Wallet::operator+=(Wallet &rhs) {
     addToBalance(0);
     rhs.balance = 0;
     rhs.addToBalance(0);
+    return *this;
 }
 
 Wallet& Wallet::operator+=(Wallet &&rhs) {
