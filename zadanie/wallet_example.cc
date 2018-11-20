@@ -1,4 +1,4 @@
-#include "wallet.h"
+#include "../src/wallet.h"
 
 #include <cassert>
 #include <iostream>
