@@ -6,10 +6,10 @@
 #include <string>
 
 class Wallet {
-public:
     using Unit = uint64_t;
     using Bajtk = int;
     using Time = std::chrono::system_clock::time_point;
+public:
     
     class Operation {
     public:
@@ -90,12 +90,7 @@ public:
     friend std::ostream &operator<<(std::ostream &out, const Wallet &w);
     
     const Operation &operator[](size_t idx) const;
-
-    friend bool operator<(const Wallet &lhs, Wallet &&rhs);
-    friend bool operator<(const Wallet &lhs, Wallet &rhs);
-    friend bool operator<(const Wallet &&lhs, Wallet &&rhs);
-    friend bool operator<(const Wallet &&lhs, Wallet &rhs);
-
+    
 
     Wallet& operator=(Wallet &&rhs) noexcept;
 
@@ -111,8 +106,7 @@ public:
     friend Wallet&& operator*(Wallet &&lhs, int n);
     friend Wallet&& operator*(int n, Wallet &lhs);
     friend Wallet&& operator*(int n, Wallet &&lhs);
-
-    //Wallet operator*(int n) const; // TODO dodane const
+    
 
     Wallet& operator-=(Wallet &rhs);
     Wallet& operator-=(Wallet &&rhs);
@@ -122,6 +116,11 @@ public:
 
     friend bool operator<(const Wallet &lhs, const Wallet &rhs);
     friend bool operator==(const Wallet &lhs, const Wallet &rhs);
+    friend bool operator<=(const Wallet &lhs, const Wallet &rhs);
+    friend bool operator!=(const Wallet &lhs, const Wallet &rhs);
+    friend bool operator>(const Wallet &lhs, const Wallet &rhs);
+    friend bool operator>=(const Wallet &lhs, const Wallet &rhs);
+   
 
 };
 

@@ -1,9 +1,7 @@
-#include "wallet.h"
 #include <stdexcept>
 #include <regex>
 #include <iostream>
 #include "wallet.h"
-
 
 using namespace std;
 
@@ -28,7 +26,7 @@ Wallet::Wallet(const std::string &str) : balance(), history() {
     initFromString(str);
 }
 
-Wallet::Wallet(const char *str) : balance(), history()  {
+Wallet::Wallet(const char *str) : balance(), history() {
     initFromString(str);
 }
 
@@ -165,7 +163,7 @@ Wallet::Operation::Operation(Unit currentBalance) : balanceAfterOperation(curren
     time = chrono::time_point_cast<chrono::milliseconds>(now); //cat precision to milliseconds
 }
 
-Wallet::Unit Wallet::Operation::getUnits() const{
+Wallet::Unit Wallet::Operation::getUnits() const {
     return balanceAfterOperation;
 }
 
@@ -197,7 +195,7 @@ std::ostream &operator<<(std::ostream &out, const Wallet::Operation &w) {
     string balanceString = Wallet::toString(w.balanceAfterOperation);
     string dateString = w.timeToDate();
     
-    out << "Wallet balance is " + balanceString+ " B after operation made at day " + dateString << endl;
+    out << "Wallet balance is " + balanceString + " B after operation made at day " + dateString << endl;
     
     return out;
 }
@@ -206,8 +204,8 @@ std::string Wallet::Operation::timeToDate() const {
     time_t t = chrono::system_clock::to_time_t(time);
     auto timeStructure = *localtime(&t);
     return to_string(timeStructure.tm_year + 1900) + "-"
-    + to_string(timeStructure.tm_mon + 1) + "-"
-    + to_string(timeStructure.tm_mday);
+           + to_string(timeStructure.tm_mon + 1) + "-"
+           + to_string(timeStructure.tm_mday);
 }
 
 const Wallet &Empty() {
@@ -215,7 +213,7 @@ const Wallet &Empty() {
     return empty;
 }
 
-Wallet& Wallet::operator=(Wallet &&rhs) noexcept {
+Wallet &Wallet::operator=(Wallet &&rhs) noexcept {
     if (this == &rhs) {
         return *this;
     }
@@ -227,7 +225,7 @@ Wallet& Wallet::operator=(Wallet &&rhs) noexcept {
     return *this;
 }
 
-Wallet& Wallet::operator-=(Wallet &rhs) {
+Wallet &Wallet::operator-=(Wallet &rhs) {
     balance -= rhs.balance;
     rhs.addToBalance(rhs.balance);
     numberOfExistingUnit += rhs.balance;
@@ -235,22 +233,22 @@ Wallet& Wallet::operator-=(Wallet &rhs) {
     return *this;
 }
 
-Wallet& Wallet::operator-=(Wallet &&rhs) {
+Wallet &Wallet::operator-=(Wallet &&rhs) {
     *this -= rhs;
     return *this;
 }
 
-Wallet&& operator-(Wallet &&lhs, Wallet &rhs) {
+Wallet &&operator-(Wallet &&lhs, Wallet &rhs) {
     lhs -= rhs;
     return std::move(lhs);
 }
 
-Wallet&& operator-(Wallet &&lhs, Wallet &&rhs) {
+Wallet &&operator-(Wallet &&lhs, Wallet &&rhs) {
     lhs -= rhs;
     return std::move(lhs);
 }
 
-Wallet& Wallet::operator+=(Wallet &rhs) {
+Wallet &Wallet::operator+=(Wallet &rhs) {
     balance += rhs.balance;
     addToBalance(0);
     rhs.balance = 0;
@@ -258,22 +256,22 @@ Wallet& Wallet::operator+=(Wallet &rhs) {
     return *this;
 }
 
-Wallet& Wallet::operator+=(Wallet &&rhs) {
+Wallet &Wallet::operator+=(Wallet &&rhs) {
     *this += rhs;
     return *this;
 }
 
-Wallet&& operator+(Wallet &&lhs, Wallet &rhs) {
+Wallet &&operator+(Wallet &&lhs, Wallet &rhs) {
     lhs += rhs;
-    return(std::move(lhs));
+    return (std::move(lhs));
 }
 
-Wallet&& operator+(Wallet &&lhs, Wallet &&rhs) {
+Wallet &&operator+(Wallet &&lhs, Wallet &&rhs) {
     lhs += rhs;
-    return(std::move(lhs));
+    return (std::move(lhs));
 }
 
-Wallet& Wallet::operator*=(int n) {
+Wallet &Wallet::operator*=(int n) {
     Unit balance = getUnits();
     Unit newCoins = balance * (n - 1);
     addToBalance(newCoins);
@@ -282,39 +280,27 @@ Wallet& Wallet::operator*=(int n) {
     return *this;
 }
 
-Wallet&& operator*(Wallet &lhs, int n) {
+Wallet &&operator*(Wallet &lhs, int n) {
     lhs *= n;
-    return(std::move(lhs));
+    return (std::move(lhs));
 }
 
-Wallet&& operator*(Wallet &&lhs, int n) {
+Wallet &&operator*(Wallet &&lhs, int n) {
     lhs *= n;
-    return(std::move(lhs));
+    return (std::move(lhs));
 }
 
-Wallet&& operator*(int n, Wallet &rhs) {
+Wallet &&operator*(int n, Wallet &rhs) {
     rhs *= n;
-    return(std::move(rhs));
+    return (std::move(rhs));
 }
 
-Wallet&& operator*(int n, Wallet &&rhs) {
+Wallet &&operator*(int n, Wallet &&rhs) {
     rhs *= n;
-    return(std::move(rhs));
+    return (std::move(rhs));
 }
 
-bool operator<(const Wallet &lhs, Wallet &&rhs) {
-    return lhs.balance < rhs.balance;
-}
-
-bool operator<(const Wallet &&lhs, Wallet &&rhs) {
-    return lhs.balance < rhs.balance;
-}
-
-bool operator<(const Wallet &lhs, Wallet &rhs) {
-    return lhs.balance < rhs.balance;
-}
-
-bool operator<(const Wallet &lhs,const Wallet &rhs) {
+bool operator<(const Wallet &lhs, const Wallet &rhs) {
     return lhs.balance < rhs.balance;
 }
 
@@ -322,10 +308,24 @@ bool operator==(const Wallet &lhs, const Wallet &rhs) {
     return lhs.getUnits() == rhs.getUnits();
 }
 
-
-
-Wallet::~Wallet() {
-    numberOfExistingUnit-=balance;
+bool operator<=(const Wallet &lhs, const Wallet &rhs) {
+    return lhs < rhs || lhs == rhs;
 }
 
-//bool Operation::operator<(const Operation op)
+bool operator!=(const Wallet &lhs, const Wallet &rhs) {
+    return !(lhs == rhs);
+}
+
+bool operator>(const Wallet &lhs, const Wallet &rhs) {
+    return !(lhs<rhs) && lhs != rhs;
+}
+
+bool operator>=(const Wallet &lhs, const Wallet &rhs) {
+    return lhs > rhs || lhs == rhs;
+}
+
+Wallet::~Wallet() {
+    numberOfExistingUnit -= balance;
+}
+
+
