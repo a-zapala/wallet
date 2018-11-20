@@ -40,7 +40,7 @@ private:
     std::vector<Operation> history;
     
     static constexpr Unit unitInBajtk = 100000000;
-    static constexpr Unit maxNumberOfBajtk = 21000000;
+    static constexpr Bajtk maxNumberOfBajtk = 21000000;
     static constexpr Unit maxNumberOfUnit = maxNumberOfBajtk * unitInBajtk;
     
     static Unit numberOfExistingUnit;
